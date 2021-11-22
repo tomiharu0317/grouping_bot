@@ -1,0 +1,1 @@
+"push": "cp appsscript.json dist/appsscript.json && tsc && clasp push -f"
