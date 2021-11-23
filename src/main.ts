@@ -74,9 +74,9 @@ function grouping() {
         maleShuffled.slice(6, 10)
     );
 
-    const pushText = [group1, group2, group3];
+    const groupList = [group1, group2, group3];
 
-    push("", pushText);
+    push("", groupList);
 }
 
 function push(pushText: string, groupList?: string[]) {
@@ -190,5 +190,6 @@ function makeFlexMessage(groupList: string[]) {
         },
     };
 
+    // return JSON.stringify(flexMessage);
     return flexMessage;
 }
