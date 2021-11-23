@@ -198,14 +198,18 @@ function makeFlexMessage(groupList: string[]) {
     return flexMessage;
 }
 
-function setTrigger() {
-    const triggerDay = new Date();
-    triggerDay.setHours(8);
-    triggerDay.setMinutes(30);
-
-    ScriptApp.newTrigger("grouping")
+function setSetGroupingTrigger() {
+    ScriptApp.newTrigger("setGroupingTrigger")
         .timeBased()
         .onWeekDay(ScriptApp.WeekDay.MONDAY)
-        .at(triggerDay)
+        .atHour(7)
         .create();
+}
+
+function setGroupingTrigger() {
+    const triggerDay = new Date();
+    triggerDay.setHours(16);
+    triggerDay.setMinutes(0);
+
+    ScriptApp.newTrigger("grouping").timeBased().at(triggerDay).create();
 }
