@@ -5,6 +5,8 @@ const PUSH_URL = "https://api.line.me/v2/bot/message/push";
 
 function doPost(e: any) {
     const type = JSON.parse(e.postData.contents).events[0].type;
+
+    // グループ参加イベントで挨拶メッセージ;
     if (type === "join") {
         setGroupId(e);
         const greetings =
@@ -15,6 +17,7 @@ function doPost(e: any) {
     }
 }
 
+// 招待された時にグループIDを設定
 function setGroupId(e: any) {
     const groupId = JSON.parse(e.postData.contents).events[0].source.groupId;
     properties.setProperty("groupId", groupId);
@@ -97,6 +100,7 @@ function header() {
     };
 }
 
+// 挨拶メッセージとflex messageで分岐
 function postData(pushText: string, groupList?: string[]) {
     if (groupList === undefined) {
         return {
@@ -182,6 +186,7 @@ function makeFlexMessage(groupList: string[]) {
     return flexMessage;
 }
 
+// 毎週月曜日午前7時から8時に「8:30にグルーピングする関数のトリガー」を設定
 function setSetGroupingTrigger() {
     ScriptApp.newTrigger("setGroupingTrigger")
         .timeBased()
@@ -190,6 +195,7 @@ function setSetGroupingTrigger() {
         .create();
 }
 
+// 8:30にグルーピング
 function setGroupingTrigger() {
     const triggerDay = new Date();
     triggerDay.setHours(8);
