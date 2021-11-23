@@ -43,24 +43,15 @@ function shuffle(memberList: string[]) {
     return memberList;
 }
 
-function makeGroupText(femaleShuflled: string[], maleShuffled: string[]) {
-    const group = femaleShuflled.join(" ") + " " + maleShuffled.join(" ");
+function makeGroupText(
+    groupNum: number,
+    femaleShuflled: string[],
+    maleShuffled: string[]
+) {
+    const group = groupNum.toString() + "： ";
+    femaleShuflled.join(" ") + " " + maleShuffled.join(" ");
 
     return group;
-}
-
-function makePushText(group1: string, group2: string, group3: string) {
-    const pushText =
-        "グループ1：" +
-        group1 +
-        "\n" +
-        "グループ２：" +
-        group2 +
-        "\n" +
-        "グループ3：" +
-        group3;
-
-    return pushText;
 }
 
 function grouping() {
@@ -68,32 +59,46 @@ function grouping() {
     const femaleShuflled = shuffle(female);
 
     const group1 = makeGroupText(
+        1,
         femaleShuflled.slice(0, 2),
         maleShuffled.slice(0, 3)
     );
     const group2 = makeGroupText(
+        2,
         femaleShuflled.slice(2, 4),
         maleShuffled.slice(3, 6)
     );
     const group3 = makeGroupText(
+        3,
         femaleShuflled.slice(4, 6),
         maleShuffled.slice(6, 10)
     );
 
-    const pushText = makePushText(group1, group2, group3);
+    const pushText = [group1, group2, group3];
 
-    push(pushText);
+    push("", pushText);
 }
 
-function push(pushText: string) {
-    // POSTオプション作成
-    const options: any = {
-        method: "POST",
-        headers: header(),
-        payload: JSON.stringify(postData(pushText)),
-    };
+function push(pushText: string, groupList?: string[]) {
+    if (groupList === undefined) {
+        // POSTオプション作成
+        const options: any = {
+            method: "POST",
+            headers: header(),
+            payload: JSON.stringify(postData(pushText)),
+        };
 
-    return UrlFetchApp.fetch(PUSH_URL, options);
+        return UrlFetchApp.fetch(PUSH_URL, options);
+    } else {
+        // POSTオプション作成
+        const options: any = {
+            method: "POST",
+            headers: header(),
+            payload: JSON.stringify(postData(pushText, groupList)),
+        };
+
+        return UrlFetchApp.fetch(PUSH_URL, options);
+    }
 }
 
 function header() {
@@ -103,14 +108,87 @@ function header() {
     };
 }
 
-function postData(pushText: string) {
-    return {
-        to: properties.getProperty("groupId"),
-        messages: [
-            {
-                type: "text",
-                text: pushText,
-            },
-        ],
+function postData(pushText: string, groupList?: string[]) {
+    if (groupList === undefined) {
+        return {
+            to: properties.getProperty("groupId"),
+            messages: [
+                {
+                    type: "text",
+                    text: pushText,
+                },
+            ],
+        };
+    } else {
+        return {
+            to: properties.getProperty("groupID"),
+            messages: [
+                {
+                    type: "flex",
+                    altText: "本日のディスカッショングループ",
+                    contents: makeFlexMessage(groupList),
+                },
+            ],
+        };
+    }
+}
+
+function makeDayStr() {
+    const date = new Date();
+    const day =
+        (date.getMonth() + 1).toString() + "/" + date.getDate().toString();
+
+    return day;
+}
+
+function makeFlexMessage(groupList: string[]) {
+    const flexMessage = {
+        type: "bubble",
+        header: {
+            type: "box",
+            layout: "vertical",
+            spacing: "none",
+            contents: [
+                {
+                    type: "text",
+                    text: makeDayStr() + "のグループ",
+                    wrap: true,
+                },
+                {
+                    type: "separator",
+                },
+            ],
+        },
+
+        body: {
+            type: "box",
+            layout: "vertical",
+            spacing: "lg",
+            contents: [
+                {
+                    type: "text",
+                    text: "1: " + groupList[0],
+                    wrap: true,
+                },
+                {
+                    type: "separator",
+                },
+                {
+                    type: "text",
+                    text: "2： " + groupList[1],
+                    wrap: true,
+                },
+                {
+                    type: "separator",
+                },
+                {
+                    type: "text",
+                    text: "3: " + groupList[2],
+                    wrap: true,
+                },
+            ],
+        },
     };
+
+    return flexMessage;
 }
