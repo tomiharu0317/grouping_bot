@@ -197,3 +197,15 @@ function makeFlexMessage(groupList: string[]) {
     // return JSON.stringify(flexMessage);
     return flexMessage;
 }
+
+function setTrigger() {
+    const triggerDay = new Date();
+    triggerDay.setHours(8);
+    triggerDay.setMinutes(30);
+
+    ScriptApp.newTrigger("grouping")
+        .timeBased()
+        .onWeekDay(ScriptApp.WeekDay.MONDAY)
+        .at(triggerDay)
+        .create();
+}
