@@ -1,5 +1,3 @@
-// import { male, female } from "./members";
-
 const properties = PropertiesService.getScriptProperties();
 
 const ACCESS_TOKEN = properties.getProperty("ACCESS_TOKEN");
@@ -194,7 +192,6 @@ function makeFlexMessage(groupList: string[]) {
         },
     };
 
-    // return JSON.stringify(flexMessage);
     return flexMessage;
 }
 
@@ -208,8 +205,8 @@ function setSetGroupingTrigger() {
 
 function setGroupingTrigger() {
     const triggerDay = new Date();
-    triggerDay.setHours(16);
-    triggerDay.setMinutes(0);
+    triggerDay.setHours(8);
+    triggerDay.setMinutes(30);
 
     ScriptApp.newTrigger("grouping").timeBased().at(triggerDay).create();
 }
