@@ -48,8 +48,12 @@ function makeGroupText(
     femaleShuflled: string[],
     maleShuffled: string[]
 ) {
-    const group = groupNum.toString() + "： ";
-    femaleShuflled.join(" ") + " " + maleShuffled.join(" ");
+    const group =
+        groupNum.toString() +
+        "： " +
+        femaleShuflled.join(" ") +
+        " " +
+        maleShuffled.join(" ");
 
     return group;
 }
