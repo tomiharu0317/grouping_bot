@@ -125,7 +125,7 @@ function postData(pushText: string, groupList?: string[]) {
         };
     } else {
         return {
-            to: properties.getProperty("groupID"),
+            to: properties.getProperty("groupId"),
             messages: [
                 {
                     type: "flex",
@@ -171,7 +171,7 @@ function makeFlexMessage(groupList: string[]) {
             contents: [
                 {
                     type: "text",
-                    text: "1: " + groupList[0],
+                    text: groupList[0],
                     wrap: true,
                 },
                 {
@@ -179,7 +179,7 @@ function makeFlexMessage(groupList: string[]) {
                 },
                 {
                     type: "text",
-                    text: "2： " + groupList[1],
+                    text: groupList[1],
                     wrap: true,
                 },
                 {
@@ -187,7 +187,7 @@ function makeFlexMessage(groupList: string[]) {
                 },
                 {
                     type: "text",
-                    text: "3: " + groupList[2],
+                    text: groupList[2],
                     wrap: true,
                 },
             ],
