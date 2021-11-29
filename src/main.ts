@@ -191,27 +191,29 @@ function makeFlexMessage(groupList: any[]) {
 }
 
 // 毎週月曜日午前7時から8時に「8:30にグルーピングする関数のトリガー」を設定
-// function setSetGroupingTrigger() {
-//     ScriptApp.newTrigger("setGroupingTrigger")
-//         .timeBased()
-//         .onWeekDay(ScriptApp.WeekDay.MONDAY)
-//         .atHour(7)
-//         .create();
-// }
-
 function setGroupingTrigger() {
-    ScriptApp.newTrigger("grouping")
+    ScriptApp.newTrigger("groupingTrigger")
         .timeBased()
         .onWeekDay(ScriptApp.WeekDay.MONDAY)
         .atHour(7)
         .create();
 }
 
-// // 8:30にグルーピング
-// function setGroupingTrigger() {
-//     const triggerDay = new Date();
-//     triggerDay.setHours(8);
-//     triggerDay.setMinutes(30);
+// 8:30にグルーピング
+function groupingTrigger() {
+    const triggerDay = new Date();
+    triggerDay.setHours(8);
+    triggerDay.setMinutes(30);
 
-//     ScriptApp.newTrigger("grouping").timeBased().at(triggerDay).create();
+    ScriptApp.newTrigger("grouping").timeBased().at(triggerDay).create();
+}
+
+// function setGroupingTrigger() {
+//     ScriptApp.newTrigger("grouping")
+//         .timeBased()
+//         .onWeekDay(ScriptApp.WeekDay.MONDAY)
+//         .atHour(7)
+//         .create();
 // }
+
+// 使わなくなったトリガーを削除する
