@@ -3,19 +3,32 @@ const properties = PropertiesService.getScriptProperties();
 const ACCESS_TOKEN = properties.getProperty("ACCESS_TOKEN");
 const PUSH_URL = "https://api.line.me/v2/bot/message/push";
 
-// function doPost(e: any) {
-//     const type = JSON.parse(e.postData.contents).events[0].type;
+const male = [
+    "石井",
+    "鈴木",
+    "田口",
+    "富木",
+    "富澤",
+    "野口",
+    "牧野",
+    "三澤",
+    "山岸",
+];
+const female = ["伊藤", "倉橋", "椚田", "佐々木", "陳", "平井"];
 
-//     // グループ参加イベントで挨拶メッセージ;
-//     if (type === "join") {
-//         setGroupId(e);
-//         const greetings =
-//             "グループ分けbotです。\n\n毎週月曜日午前7時-8時にディスカッションのグループ分けを自動で行います。";
-//         push(greetings);
-//     } else {
-//         return;
-//     }
-// }
+function doPost(e: any) {
+    const type = JSON.parse(e.postData.contents).events[0].type;
+
+    // グループ参加イベントで挨拶メッセージ;
+    if (type === "join") {
+        setGroupId(e);
+        // const greetings =
+        //     "グループ分けbotです。\n\n毎週月曜日午前7時-8時にディスカッションのグループ分けを自動で行います。";
+        // push(greetings);
+    } else {
+        return;
+    }
+}
 
 // 招待された時にグループIDを設定
 function setGroupId(e: any) {
@@ -49,6 +62,7 @@ function makeGroupText(
             {
                 type: "text",
                 text: groupNum.toString(),
+                align: "center",
                 wrap: true,
             },
         ],
@@ -58,12 +72,15 @@ function makeGroupText(
         const memberObj = {
             type: "text",
             text: members[i],
+            align: "start",
+            size: "xxs",
             color: "#000000",
+            margin: "10px",
             wrap: true,
         };
 
         if (i === repFemale || i === repMale) {
-            memberObj["color"] = "#0000ff";
+            memberObj["color"] = "#1E90FF";
         }
 
         group.contents.push(memberObj);
@@ -103,7 +120,7 @@ function grouping() {
 
     const groupList = [group1, group2, group3];
 
-    push("", groupList);
+    push(groupList);
 }
 
 function push(groupList: any[]) {
@@ -152,7 +169,7 @@ function makeFlexMessage(groupList: any[]) {
         header: {
             type: "box",
             layout: "vertical",
-            spacing: "none",
+            spacing: "md",
             contents: [
                 {
                     type: "text",
