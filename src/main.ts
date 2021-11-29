@@ -106,26 +106,15 @@ function grouping() {
     push("", groupList);
 }
 
-function push(pushText: string, groupList?: any[]) {
-    if (groupList === undefined) {
-        // POSTオプション作成
-        const options: any = {
-            method: "POST",
-            headers: header(),
-            payload: JSON.stringify(postData(pushText)),
-        };
+function push(groupList: any[]) {
+    // POSTオプション作成
+    const options: any = {
+        method: "POST",
+        headers: header(),
+        payload: JSON.stringify(postData(groupList)),
+    };
 
-        return UrlFetchApp.fetch(PUSH_URL, options);
-    } else {
-        // POSTオプション作成
-        const options: any = {
-            method: "POST",
-            headers: header(),
-            payload: JSON.stringify(postData(pushText, groupList)),
-        };
-
-        return UrlFetchApp.fetch(PUSH_URL, options);
-    }
+    return UrlFetchApp.fetch(PUSH_URL, options);
 }
 
 function header() {
@@ -136,29 +125,17 @@ function header() {
 }
 
 // 挨拶メッセージとflex messageで分岐
-function postData(pushText: string, groupList?: any[]) {
-    if (groupList === undefined) {
-        return {
-            to: properties.getProperty("groupId"),
-            messages: [
-                {
-                    type: "text",
-                    text: pushText,
-                },
-            ],
-        };
-    } else {
-        return {
-            to: properties.getProperty("groupId"),
-            messages: [
-                {
-                    type: "flex",
-                    altText: "本日のディスカッショングループ",
-                    contents: makeFlexMessage(groupList),
-                },
-            ],
-        };
-    }
+function postData(groupList: any[]) {
+    return {
+        to: properties.getProperty("groupId"),
+        messages: [
+            {
+                type: "flex",
+                altText: "本日のディスカッショングループ",
+                contents: makeFlexMessage(groupList),
+            },
+        ],
+    };
 }
 
 function makeDayStr() {
