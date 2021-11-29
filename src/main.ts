@@ -3,19 +3,6 @@ const properties = PropertiesService.getScriptProperties();
 const ACCESS_TOKEN = properties.getProperty("ACCESS_TOKEN");
 const PUSH_URL = "https://api.line.me/v2/bot/message/push";
 
-const male = [
-    "石井",
-    "鈴木",
-    "田口",
-    "富木",
-    "富澤",
-    "野口",
-    "牧野",
-    "三澤",
-    "山岸",
-];
-const female = ["伊藤", "倉橋", "椚田", "佐々木", "陳", "平井"];
-
 function doPost(e: any) {
     const type = JSON.parse(e.postData.contents).events[0].type;
 
