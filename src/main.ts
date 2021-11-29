@@ -3,19 +3,19 @@ const properties = PropertiesService.getScriptProperties();
 const ACCESS_TOKEN = properties.getProperty("ACCESS_TOKEN");
 const PUSH_URL = "https://api.line.me/v2/bot/message/push";
 
-function doPost(e: any) {
-    const type = JSON.parse(e.postData.contents).events[0].type;
+// function doPost(e: any) {
+//     const type = JSON.parse(e.postData.contents).events[0].type;
 
-    // グループ参加イベントで挨拶メッセージ;
-    if (type === "join") {
-        setGroupId(e);
-        const greetings =
-            "グループ分けbotです。\n\n毎週月曜日午前8:30にディスカッションのグループ分けを自動で行います。";
-        push(greetings);
-    } else {
-        return;
-    }
-}
+//     // グループ参加イベントで挨拶メッセージ;
+//     if (type === "join") {
+//         setGroupId(e);
+//         const greetings =
+//             "グループ分けbotです。\n\n毎週月曜日午前7時-8時にディスカッションのグループ分けを自動で行います。";
+//         push(greetings);
+//     } else {
+//         return;
+//     }
+// }
 
 // 招待された時にグループIDを設定
 function setGroupId(e: any) {
@@ -36,14 +36,49 @@ function makeGroupText(
     femaleShuflled: string[],
     maleShuffled: string[]
 ) {
-    const group =
-        groupNum.toString() +
-        "： " +
-        femaleShuflled.join(" ") +
-        " " +
-        maleShuffled.join(" ");
+    const rep = assignRepresentative();
+    const members = femaleShuflled.concat(maleShuffled);
+
+    const repFemale: number = rep[0];
+    const repMale: number = rep[1];
+
+    const group = {
+        type: "box",
+        layout: "horizontal",
+        contents: [
+            {
+                type: "text",
+                text: groupNum.toString(),
+                wrap: true,
+            },
+        ],
+    };
+
+    for (let i = 0; i < 5; i++) {
+        const memberObj = {
+            type: "text",
+            text: members[i],
+            color: "#000000",
+            wrap: true,
+        };
+
+        if (i === repFemale || i === repMale) {
+            memberObj["color"] = "#0000ff";
+        }
+
+        group.contents.push(memberObj);
+    }
 
     return group;
+}
+
+function assignRepresentative() {
+    const repMale = Math.floor(Math.random() * (4 - 2 + 1)) + 2;
+    const repFemale = Math.floor(Math.random() * (1 - 0 + 1)) + 0;
+
+    const rep = [repFemale, repMale];
+
+    return rep;
 }
 
 function grouping() {
@@ -71,7 +106,7 @@ function grouping() {
     push("", groupList);
 }
 
-function push(pushText: string, groupList?: string[]) {
+function push(pushText: string, groupList?: any[]) {
     if (groupList === undefined) {
         // POSTオプション作成
         const options: any = {
@@ -101,7 +136,7 @@ function header() {
 }
 
 // 挨拶メッセージとflex messageで分岐
-function postData(pushText: string, groupList?: string[]) {
+function postData(pushText: string, groupList?: any[]) {
     if (groupList === undefined) {
         return {
             to: properties.getProperty("groupId"),
@@ -134,7 +169,7 @@ function makeDayStr() {
     return day;
 }
 
-function makeFlexMessage(groupList: string[]) {
+function makeFlexMessage(groupList: any[]) {
     const flexMessage = {
         type: "bubble",
         header: {
@@ -158,27 +193,15 @@ function makeFlexMessage(groupList: string[]) {
             layout: "vertical",
             spacing: "lg",
             contents: [
-                {
-                    type: "text",
-                    text: groupList[0],
-                    wrap: true,
-                },
+                groupList[0],
                 {
                     type: "separator",
                 },
-                {
-                    type: "text",
-                    text: groupList[1],
-                    wrap: true,
-                },
+                groupList[1],
                 {
                     type: "separator",
                 },
-                {
-                    type: "text",
-                    text: groupList[2],
-                    wrap: true,
-                },
+                groupList[2],
             ],
         },
     };
@@ -187,19 +210,27 @@ function makeFlexMessage(groupList: string[]) {
 }
 
 // 毎週月曜日午前7時から8時に「8:30にグルーピングする関数のトリガー」を設定
-function setSetGroupingTrigger() {
-    ScriptApp.newTrigger("setGroupingTrigger")
+// function setSetGroupingTrigger() {
+//     ScriptApp.newTrigger("setGroupingTrigger")
+//         .timeBased()
+//         .onWeekDay(ScriptApp.WeekDay.MONDAY)
+//         .atHour(7)
+//         .create();
+// }
+
+function setGroupingTrigger() {
+    ScriptApp.newTrigger("grouping")
         .timeBased()
         .onWeekDay(ScriptApp.WeekDay.MONDAY)
         .atHour(7)
         .create();
 }
 
-// 8:30にグルーピング
-function setGroupingTrigger() {
-    const triggerDay = new Date();
-    triggerDay.setHours(8);
-    triggerDay.setMinutes(30);
+// // 8:30にグルーピング
+// function setGroupingTrigger() {
+//     const triggerDay = new Date();
+//     triggerDay.setHours(8);
+//     triggerDay.setMinutes(30);
 
-    ScriptApp.newTrigger("grouping").timeBased().at(triggerDay).create();
-}
+//     ScriptApp.newTrigger("grouping").timeBased().at(triggerDay).create();
+// }
