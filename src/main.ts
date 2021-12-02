@@ -108,6 +108,18 @@ function grouping() {
     const groupList = [group1, group2, group3];
 
     push(groupList);
+
+    // 使わなくなったトリガーを削除する
+    delTrigger();
+}
+
+function delTrigger() {
+    const triggers = ScriptApp.getProjectTriggers();
+    for (const trigger of triggers) {
+        if (trigger.getHandlerFunction() == "grouping") {
+            ScriptApp.deleteTrigger(trigger);
+        }
+    }
 }
 
 function push(groupList: any[]) {
@@ -207,13 +219,3 @@ function groupingTrigger() {
 
     ScriptApp.newTrigger("grouping").timeBased().at(triggerDay).create();
 }
-
-// function setGroupingTrigger() {
-//     ScriptApp.newTrigger("grouping")
-//         .timeBased()
-//         .onWeekDay(ScriptApp.WeekDay.MONDAY)
-//         .atHour(7)
-//         .create();
-// }
-
-// 使わなくなったトリガーを削除する
